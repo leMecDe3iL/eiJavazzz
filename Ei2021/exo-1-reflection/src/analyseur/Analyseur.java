@@ -1,0 +1,118 @@
+package analyseur;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class Analyseur {
+	
+	
+	// Actions
+	
+	
+	public <T> List<String> listerVariables( Class<T> type ) {
+		var liste = new ArrayList<String>();
+		
+
+        // Obtenez toutes les variables déclarées de la classe, y compris les privées
+        Field[] fields = type.getDeclaredFields();
+        for (Field field : fields) {
+            // Rendre les variables accessibles, même si elles sont privées
+            field.setAccessible(true);
+            // Ajouter le nom de la variable à la liste
+            liste.add(field.getName());
+        }
+
+		return liste;
+	}
+
+	public <T> List<String> listerMethodes( Class<T> type ) {
+		var liste = new ArrayList<String>();
+		
+		Method[] methods = type.getDeclaredMethods();
+		for(Method method : methods){
+			
+			method.setAccessible(true);
+			
+			liste.add(method.getName());
+			
+		}
+		
+		return liste;
+	}
+
+	public <T> List<String> listerMethodesObsoletes( Class<T> type ) {
+		var liste = new ArrayList<String>();
+		
+		Method[] methods = type.getDeclaredMethods();
+		for(Method method : methods){
+			
+			if(method.isAnnotationPresent(Deprecated.class)) {
+			
+			liste.add(method.getName());
+			}
+		}
+		
+		return liste;
+	}
+	
+	
+	public <T> T instancier( Class<T> type ) {
+		try {
+			
+            Constructor<T> t = type.getDeclaredConstructor();
+            
+            t.setAccessible(true);
+            
+            T t1 = t.newInstance();
+            
+			return t1;  // <-  A remplacer
+			
+		} catch (Exception e) {
+			throw new RuntimeException( e );
+		}
+	}
+	
+	
+	public <T> void executerMethode( T bean, String nomMethode, Object valeur ) {
+		try {
+			
+            // Obtention du type de l'objet valeur
+            Class<?> valueType = valeur.getClass();
+            // Obtention de la méthode correspondant au nom et au type de paramètre
+            Method method = bean.getClass().getDeclaredMethod(nomMethode, valueType);
+            // Rendre la méthode accessible, même si elle est privée
+            method.setAccessible(true);
+            // Exécution de la méthode sur l'objet bean en lui passant la valeur
+            method.invoke(bean, valeur);
+			
+		} catch (Exception e) {
+			if ( ! (e instanceof NoSuchMethodException) ) {
+				throw new RuntimeException( e );
+			}
+		}
+	}
+	
+	
+	public <T> void affecterVariable( T bean, String nomVariable, Object valeur ) {
+		try {
+			
+            // Obtention de la variable correspondant au nom indiqué
+            Field field = bean.getClass().getDeclaredField(nomVariable);
+            // Rendre la variable accessible, même si elle est privée
+            field.setAccessible(true);
+            // Affectation de la valeur à la variable dans l'objet bean
+            field.set(bean, valeur);
+			
+		} catch (Exception e) {
+			if ( ! (e instanceof NoSuchFieldException) ) {
+				throw new RuntimeException( e );
+			}
+		}
+	}
+	
+
+}

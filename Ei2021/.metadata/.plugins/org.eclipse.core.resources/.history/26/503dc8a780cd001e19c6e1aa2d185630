@@ -1,0 +1,83 @@
+package analyseur;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class Analyseur {
+	
+	
+	// Actions
+	
+	
+	public <T> List<String> listerVariables( Class<T> type ) {
+		var liste = new ArrayList<String>();
+		
+
+        // Obtenez toutes les variables déclarées de la classe, y compris les privées
+        Field[] fields = type.getDeclaredFields();
+        for (Field field : fields) {
+            // Rendre les variables accessibles, même si elles sont privées
+            field.setAccessible(true);
+            // Ajouter le nom de la variable à la liste
+            liste.add(field.getName());
+        }
+
+		return liste;
+	}
+
+	public <T> List<String> listerMethodes( Class<T> type ) {
+		var liste = new ArrayList<String>();
+		
+		/// ... ...
+		
+		return liste;
+	}
+
+	public <T> List<String> listerMethodesObsoletes( Class<T> type ) {
+		var liste = new ArrayList<String>();
+		
+		/// ... ...
+		
+		return liste;
+	}
+	
+	
+	public <T> T instancier( Class<T> type ) {
+		try {
+			
+			return null;  // <-  A remplacer
+			
+		} catch (Exception e) {
+			throw new RuntimeException( e );
+		}
+	}
+	
+	
+	public <T> void executerMethode( T bean, String nomMethode, Object valeur ) {
+		try {
+			
+			/// ... ...
+			
+		} catch (Exception e) {
+			if ( ! (e instanceof NoSuchMethodException) ) {
+				throw new RuntimeException( e );
+			}
+		}
+	}
+	
+	
+	public <T> void affecterVariable( T bean, String nomVariable, Object valeur ) {
+		try {
+			
+			/// ... ...
+			
+		} catch (Exception e) {
+			if ( ! (e instanceof NoSuchFieldException) ) {
+				throw new RuntimeException( e );
+			}
+		}
+	}
+	
+
+}

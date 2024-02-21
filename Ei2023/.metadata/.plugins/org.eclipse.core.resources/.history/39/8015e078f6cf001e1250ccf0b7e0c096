@@ -1,0 +1,51 @@
+package jeux;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+
+import jeux.dao.serial.DaoNombre;
+import jeux.model.standard.ModelNombre;
+import jeux.view.ControllerNombreConfig;
+import jeux.view.ControllerNombreJeu;
+import jeux.view.ManagerGui;
+@Configuration
+public class ConfigSimple {
+
+    @Bean
+    @Lazy
+    public DaoNombre daoNombre() {
+        return new DaoNombre();
+    }
+/*
+    @Bean
+    @Lazy
+    public ModelNombre modelNombre() {
+        return new ModelNombre();
+    }
+*/
+    
+    @Bean
+    @Lazy
+    public ControllerNombreJeu controllerNombreJeu() {
+        return new ControllerNombreJeu();
+    }
+    @Bean
+    @Lazy
+    public jeux.model.light modelNombre() {
+        return new jeux.model.light.ModelNombre();
+    }
+
+    @Bean
+    @Lazy
+    public ControllerNombreConfig controllerNombreConfig() {
+        return new ControllerNombreConfig();
+    }
+
+    @Bean
+    @Lazy
+    public ManagerGui managerGui() {
+        return new ManagerGui();
+    }
+}

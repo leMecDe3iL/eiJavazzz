@@ -1,0 +1,94 @@
+package jeux;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
+import jeux.annotations.Resource;
+
+public class Context {
+
+	// Champ
+
+	private final List<Object> beans = new ArrayList<>();
+
+	// Méthodes auxiliaires
+
+	public <T> T find(Class<T> clazz) {
+
+		for (Object bean : beans) {
+			if (clazz.isInstance(bean)) {
+				return clazz.cast(bean);
+			}
+		}
+		return null;
+
+	}
+
+	public <T> T create(Class<T> clazz) throws Exception {
+		return clazz.getDeclaredConstructor().newInstance();
+
+	}
+
+	public <T> void inject(T bean) throws Exception {
+		// Récupérer la classe de l'objet bean
+		Class<?> beanClass = bean.getClass();
+
+		// Parcourir tous les champs de la classe
+		for (Field field : beanClass.getDeclaredFields()) {
+			// Vérifier si le champ porte l'annotation @Resource
+			if (field.isAnnotationPresent(Resource.class)) {
+				
+				// Rendre le champ accessible s'il est privé
+				field.setAccessible(true);
+				
+				// Récupérer le type du champ
+				Class<?> fieldType = field.getType();
+				
+				// Récupérer l'instance associée au type du champ en utilisant getBean()
+				Object fieldValue = getBean(fieldType);
+				
+				// Affecter la valeur du champ à l'instance bean
+				field.set(bean, fieldValue);
+			}
+		}
+	}
+
+	public <T> void start(T bean) throws Exception {
+
+	}
+
+	public <T> void stop(T bean) throws Exception {
+
+	}
+
+	// Actions
+
+	public <T> T getBean(Class<T> clazz) {
+
+		T objet = find(clazz);
+		if (objet != null)
+			return objet;
+
+		try {
+			objet = create(clazz);
+			beans.add(objet);
+			inject(objet);
+			start(objet);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return objet;
+	}
+
+	public void close() {
+		try {
+			for (var item : beans) {
+				stop(item);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+}

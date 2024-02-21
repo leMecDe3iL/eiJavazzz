@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="java.lang.reflect.Field"/>
+    <fullyQualifiedTypeName name="jeux.Context"/>
+    <fullyQualifiedTypeName name="jeux.annotations.Resource"/>
+    <fullyQualifiedTypeName name="jeux.annotations.Init"/>
+    <fullyQualifiedTypeName name="jeux.annotations.Finish"/>
+    <fullyQualifiedTypeName name="javax.inject.Inject"/>
+    <fullyQualifiedTypeName name="jeux.dao.serial.DaoNombre"/>
+    <fullyQualifiedTypeName name="jeux.model.standard.ModelNombre"/>
+    <fullyQualifiedTypeName name="jeux.view.ControllerNombreJeu"/>
+    <fullyQualifiedTypeName name="jeux.view.ControllerNombreConfig"/>
+    <fullyQualifiedTypeName name="jeux.view.ManagerGui"/>
+    <fullyQualifiedTypeName name="org.springframework.context.annotation.AnnotationConfigApplicationContext"/>
+    <fullyQualifiedTypeName name="javax.annotation.PostConstruct"/>
+    <fullyQualifiedTypeName name="javax.annotation.PreDestroy"/>
+    <fullyQualifiedTypeName name="org.springframework.context.annotation.Import"/>
+    <fullyQualifiedTypeName name="java.lang.Class"/>
+    <fullyQualifiedTypeName name="org.springframework.context.annotation.Lazy"/>
+    <fullyQualifiedTypeName name="org.springframework.context.annotation.ComponentScan"/>
+    <fullyQualifiedTypeName name="org.springframework.context.annotation.Scope"/>
+    <fullyQualifiedTypeName name="jeux.ConfigExplo"/>
+    <fullyQualifiedTypeName name="jeux.ConfigSimple"/>
+    <fullyQualifiedTypeName name="org.springframework.context.annotation.Configuration"/>
+    <fullyQualifiedTypeName name="org.springframework.stereotype.Component"/>
+    <fullyQualifiedTypeName name="jeux.model.light.ModelNombre"/>
+    <fullyQualifiedTypeName name="org.junit.jupiter.api.Test"/>
+    <fullyQualifiedTypeName name="org.junit.jupiter.api.Assertions"/>
+</qualifiedTypeNameHistroy>

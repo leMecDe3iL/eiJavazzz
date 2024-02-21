@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;light&apos; to &apos;exo-2-spring/src/main/java/jeux.model&apos;&#x0D;&#x0A;- Original project: &apos;exo-2-spring&apos;&#x0D;&#x0A;- Destination element: &apos;exo-2-spring/src/main/java/jeux.model&apos;&#x0D;&#x0A;- Original element: &apos;light&apos;" description="Copy folder" destination="/src\/main\/java&lt;jeux.model" element1="light" files="0" flags="589830" folders="1" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1708436411472" units="0" version="1.0"/>
+</session>

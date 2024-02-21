@@ -1,0 +1,18 @@
+package labofx;
+
+import javax.inject.Inject;
+
+import org.springframework.context.annotation.ComponentScan;
+
+import labofx.model.DaoCalculXml;
+import labofx.model.IDaoCalcul;
+
+@ComponentScan(lazyInit = true)
+public class ConfigLaboFX {
+
+	@Inject @Lazy
+	public IDaoCalcul daoCalcul() {
+		return new DaoCalculXml();
+	}
+	
+}

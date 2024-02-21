@@ -1,0 +1,7 @@
+package jeux;
+
+@Configuration
+@ComponentScan("jeux")
+public class ConfigExplo {
+
+}

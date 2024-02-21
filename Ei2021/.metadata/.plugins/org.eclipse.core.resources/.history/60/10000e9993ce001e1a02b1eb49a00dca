@@ -1,0 +1,54 @@
+package labofx.model;
+
+
+public class ModelCalcul {
+
+	
+	// Champs
+	
+	private final Calcul	calcul = new Calcul();
+	@Inject
+	private DaoCalculSerial		daoCalcul;
+	
+	
+	// Initialisation et fermeture
+
+	public void init() {
+		calcul.update( daoCalcul.lire() );
+	}
+	
+	public void close() {
+		daoCalcul.enregistrer( calcul );
+	}
+	
+	
+	// Getters 
+	
+	public Calcul getCalcul() {
+		return calcul;
+	}
+	
+	
+	// Actions
+	
+	public void operation1() {
+		if ( calcul.getDonnee() != null ) {
+			calcul.setResultat( calcul.getDonnee() * 77 );
+			calcul.setOperation( "Multiplication par 77" );
+		}
+	}
+	
+	public void operation2() {
+		if ( calcul.getDonnee() != null ) {
+			calcul.setResultat( calcul.getDonnee() *  calcul.getDonnee()  );
+			calcul.setOperation( "Élévation au carré" );
+		}
+	}
+
+	
+	// Méthode anonyme
+	{
+		System.out.println( "new " + this.getClass().getName() );
+	}
+
+}

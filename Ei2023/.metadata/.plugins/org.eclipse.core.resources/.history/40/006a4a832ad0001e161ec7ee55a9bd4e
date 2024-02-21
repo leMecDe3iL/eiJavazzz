@@ -1,0 +1,92 @@
+package jeux.model;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import jeux.dao.DaoNombre;
+
+
+
+@TestMethodOrder(MethodOrderer.MethodName.class )
+public class TestModelNombre {
+
+	
+	@Test
+	public void test1_jouer_trop_petit() {
+
+		// Variables de travail
+		DaoNombre daoNombre;
+		ModelNombre modelNombre;
+		// Initialisation du DAO
+		daoNombre = new DaoNombre();
+		daoNombre.init( 15 );
+		// Initialisation du Model
+		modelNombre = new ModelNombre();
+		modelNombre.setDaoNombre( daoNombre );
+		
+
+		
+
+	   
+	}
+
+	
+
+	public void test2_jouer_trop_grand() {
+
+		// Variables de travail
+		DaoNombre daoNombre;
+		ModelNombre modelNombre;
+		// Initialisation du DAO
+		daoNombre = new DaoNombre();
+		daoNombre.init( 15 );
+		// Initialisation du Model
+		modelNombre = new ModelNombre();
+		modelNombre.setDaoNombre( daoNombre );
+	
+		
+
+	}
+
+	
+
+	public void test3_jouer_gagnant() {
+
+		// Variables de travail
+		DaoNombre daoNombre;
+		ModelNombre modelNombre;
+		// Initialisation du DAO
+		daoNombre = new DaoNombre();
+		daoNombre.init( 15 );
+		// Initialisation du Model
+		modelNombre = new ModelNombre();
+		modelNombre.setDaoNombre( daoNombre );
+		
+		
+		
+	}
+
+	
+
+	public void test4_jouer_perdant() {
+
+		
+	}
+
+	
+
+	public void test5_jouer_exception() {
+		
+		
+	}
+
+
+	
+	public void test6_jouer_reponse( String valeur, int reponse ) {
+		
+
+	}	
+	
+}

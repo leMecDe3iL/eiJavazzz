@@ -1,0 +1,9 @@
+package labofx;
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Lazy;
+
+@ComponentScan @Lazy(true)
+public class ConfigLaboFX {
+
+}

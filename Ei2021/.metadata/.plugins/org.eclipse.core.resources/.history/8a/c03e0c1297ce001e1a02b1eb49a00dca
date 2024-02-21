@@ -1,0 +1,59 @@
+package labofx.model;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Component;
+@Component
+public class ModelCalcul {
+
+	
+	// Champs
+	
+	private final Calcul	calcul = new Calcul();
+	@Inject
+	private DaoCalculSerial		daoCalcul;
+	
+	
+	// Initialisation et fermeture
+	@PostConstruct
+	public void init() {
+		calcul.update( daoCalcul.lire() );
+	}
+	@PreDestroy
+	public void close() {
+		daoCalcul.enregistrer( calcul );
+	}
+	
+	
+	// Getters 
+	
+	public Calcul getCalcul() {
+		return calcul;
+	}
+	
+	
+	// Actions
+	
+	public void operation1() {
+		if ( calcul.getDonnee() != null ) {
+			calcul.setResultat( calcul.getDonnee() * 77 );
+			calcul.setOperation( "Multiplication par 77" );
+		}
+	}
+	
+	public void operation2() {
+		if ( calcul.getDonnee() != null ) {
+			calcul.setResultat( calcul.getDonnee() *  calcul.getDonnee()  );
+			calcul.setOperation( "Élévation au carré" );
+		}
+	}
+
+	
+	// Méthode anonyme
+	{
+		System.out.println( "new " + this.getClass().getName() );
+	}
+
+}

@@ -1,0 +1,138 @@
+package analyseur;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
+
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestAnalyseur {
+	
+	
+	// Méthodes de test
+	
+
+	@Test @Order(1)
+	public void testListerVariables() {
+		try {
+			var analyseur = new Analyseur();
+			var liste = analyseur.listerVariables( Personne.class );
+			afficher( liste, "Liste des variables" );
+			assertEquals( 5, liste.size() );
+			assertTrue( liste.contains( "dateNaissance" ));
+			assertTrue( liste.contains( "majeur" ));
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+	
+	@Test @Order(2)
+	public void testListerMethodes() {
+		try {
+			var analyseur = new Analyseur();
+			var liste = analyseur.listerMethodes( Personne.class );
+			afficher( liste, "Liste des méthodes" );
+			assertEquals( 8, liste.size() );
+			assertTrue( liste.contains( "getDateNaissance" ));
+			assertTrue( liste.contains( "calculerAge" ));
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
+
+	@Test @Order(3)
+	public void testListerMethodesObsoletes() {
+		try {
+			var analyseur = new Analyseur();
+			var liste = analyseur.listerMethodesObsoletes( Personne.class );
+			afficher( liste, "Méthodes obsolètes" );
+			assertEquals( 2, liste.size() );
+			assertTrue( liste.contains( "isMajeur" ));
+			assertTrue( liste.contains( "actualiserAge" ));
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
+
+	@Test @Order(4)
+	public void testInstancier() {
+		try {
+			var analyseur = new Analyseur();
+			var bean = analyseur.instancier( Personne.class );
+			afficherTitre( "Instanciation" );
+			System.out.println( bean );
+			assertNotNull( bean );
+			assertEquals( Personne.class, bean.getClass() );
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
+
+	@Test @Order(5)
+	public void testExecuterMethode() {
+		try {
+			var analyseur = new Analyseur();
+			Personne bean = new Personne( "DUPONT", "Jean", LocalDate.parse("2000-05-17"));
+			analyseur.executerMethode( bean, "actualiserAge", LocalDate.now().minusYears(24) );
+			afficherTitre( "Exécution méthode" );
+			System.out.println( bean );
+			assertEquals( 24, bean.getAge());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+	
+	@Disabled
+	@Test @Order(6)
+	public void testAffecterValeur() {
+		try {
+			var analyseur = new Analyseur();
+			Personne bean = new Personne( "DUPONT", "Jean", LocalDate.parse("2000-05-17"));
+			analyseur.affecterVariable( bean, "age", 99 );
+			afficherTitre( "Affectation valeur" );
+			System.out.println( bean );
+			assertEquals( 99, bean.getAge());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+	
+	
+	// Méthodes auxiliaire
+	
+	private void afficher( List<?> liste, String ttitre ) {
+		afficherTitre( ttitre + " (" + liste.size() + ")" );
+		for( Object item : liste ) {
+			System.out.println( item );
+		}
+	}
+	
+	private void afficherTitre( String titre ) {
+		System.out.println();
+		System.out.println( titre );
+		var sb = new StringBuffer( titre.length() );
+		for ( int i = 0; i < titre.length(); ++i ) {
+			sb.append( '-' );
+		}
+		System.out.println( sb );
+	}
+	
+}

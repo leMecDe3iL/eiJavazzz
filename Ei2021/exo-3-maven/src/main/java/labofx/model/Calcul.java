@@ -1,0 +1,80 @@
+package labofx.model;
+
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
+
+public class Calcul {
+
+ 	
+	// Champs
+	
+	private final Property<Double>	donnee		= new SimpleObjectProperty<>();
+	private final Property<Double>	resultat	= new SimpleObjectProperty<>();
+	private final StringProperty	operation	= new SimpleStringProperty();
+	
+	
+	// Constructeurs
+	
+	public Calcul() {
+		donnee.addListener( obs -> {
+			setResultat( null );
+			setOperation( null );
+		});
+	}
+
+	public Calcul( Double donnee, Double resultat, String operation ) {
+		this();
+		setDonnee(donnee);
+		setResultat(resultat);
+		setOperation(operation);
+	}
+	
+	
+	// Getters & Setters
+
+	public final Property<Double> donneeProperty() {
+		return this.donnee;
+	}
+	
+	public final Double getDonnee() {
+		return this.donneeProperty().getValue();
+	}
+	
+	public final void setDonnee(final Double donnee) {
+		this.donneeProperty().setValue(donnee);
+	}
+	
+	public final Property<Double> resultatProperty() {
+		return this.resultat;
+	}
+	
+	public final Double getResultat() {
+		return this.resultatProperty().getValue();
+	}
+	
+	public final void setResultat(final Double resultat) {
+		this.resultatProperty().setValue(resultat);
+	}
+	
+	public final StringProperty operationProperty() {
+		return this.operation;
+	}
+	
+	public final String getOperation() {
+		return this.operationProperty().get();
+	}
+	
+	public final void setOperation(final String operation) {
+		this.operationProperty().set(operation);
+	}
+	
+	public void update( Calcul calcul ) {
+		setDonnee( calcul.getDonnee() );
+		setResultat( calcul.getResultat() );
+		setOperation( calcul.getOperation() );
+	}
+
+}

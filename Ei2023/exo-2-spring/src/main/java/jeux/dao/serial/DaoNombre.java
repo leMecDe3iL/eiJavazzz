@@ -1,0 +1,73 @@
+package jeux.dao.serial;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
+import org.springframework.stereotype.Component;
+
+import jeux.dao.IDaoNombre;
+import jeux.dto.DtoNombre;
+
+@Component
+public class DaoNombre implements IDaoNombre {
+
+	
+	// Champs
+	
+	private static final String CHEMIN = "nombre.serial";
+	
+	private Map<Integer, DtoNombre> mapData = new HashMap<>();
+
+	
+	// Initialisation et fermeture
+	@PostConstruct
+	@SuppressWarnings("unchecked")
+	public void init() {
+		System.out.println( getClass().getName() + "#init()"  );
+		try( var in = new ObjectInputStream( new FileInputStream( CHEMIN ) ); ) {
+			mapData = (Map<Integer, DtoNombre>) in.readObject();
+		} catch (final Exception e) {
+			mapData = new HashMap<>();
+		}
+	}
+	@PreDestroy
+	public void finish() {
+		System.out.println( getClass().getName() + "#finish()"  );
+		try( var out = new ObjectOutputStream( new FileOutputStream( CHEMIN ) ) ) {
+			out.writeObject( mapData );
+			out.flush();
+		} catch (final Exception e) {
+			System.out.println( "Erreur lors de l'ecriture du fichier " + CHEMIN);
+		}		
+	}
+	
+	
+	
+	// Actions
+	
+	@Override
+	public void inserer( DtoNombre nombre ) {
+		mapData.put( nombre.getIdJoueur(), nombre);
+	}
+
+	
+	@Override
+	public void modifier( DtoNombre nombre ) {
+		mapData.put( nombre.getIdJoueur(), nombre);
+	}
+	
+	
+	@Override
+	public DtoNombre retrouver( int idJoueur ) {
+		return mapData.get(idJoueur);
+	}
+
+
+}

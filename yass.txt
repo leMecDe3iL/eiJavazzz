@@ -1,0 +1,354 @@
+public Object rechercher(Class<?> type, Object[] data) {
+    for (Object obj : data) {
+        if (obj != null && obj.getClass().equals(type)) {
+            return obj;
+        }
+    }
+    return null;
+}
+
+public Object creerCrypteur(Class<?> clazz) {
+        try {
+            Constructor<?> constructor = clazz.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            return constructor.newInstance();
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void setSecret(Object crypteur, String code) {
+        Field[] fields = crypteur.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            if (field.isAnnotationPresent(Secret.class)) {
+                try {
+                    field.set(crypteur, code);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void decrypter(Object crypteur) {
+        Method[] methods = crypteur.getClass().getDeclaredMethods();
+        for (Method method : methods) {
+            method.setAccessible(true);
+            if (method.isAnnotationPresent(Decoder.class)) {
+                try {
+                    method.invoke(crypteur);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+ public Object getEnclair(Object crypteur) {
+        Field[] fields = crypteur.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            if (field.isAnnotationPresent(EnClair.class)) {
+                try {
+                    return field.get(crypteur);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
+
+
+
+-------------------------------------------------
+
+Partie 2 Spring
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+
+@Configuration
+public class Config1 {
+
+    @Lazy
+    @Bean
+    public Manager manager() {
+        return new Manager();
+    }
+
+    @Lazy
+    @Bean
+    public DaoCrypto daoCrypto() {
+        return new DaoCrypto();
+    }
+
+    @Lazy
+    @Bean
+    public Crypteur1 crypteur1() {
+        return new Crypteur1();
+    }
+
+    @Lazy
+    @Bean
+    public Crypteur2 crypteur2() {
+        return new Crypteur2();
+    }
+
+    @Lazy
+    @Bean
+    public Crypteur3 crypteur3() {
+        return new Crypteur3();
+    }
+}
+
+
+- question adaptation : 
+ AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Config1.class);
+
+        // Récupération du bean Manager à partir du contexte Spring
+        Manager manager = context.getBean(Manager.class);
+rajoutez context = new AnnotationConfigApplicationContext();
+			 // Enregistrer dans ce contexte la classe de configuration 
+	        context.register(ConfigExplo.class);
+
+	        // Exécuter la méthode refresh() du contexte
+	        context.refresh();
+
+--
+// Variable pour contenir l'objet Context fourni par Spring
+@Inject    
+private ApplicationContext context;
+
+ public void decrypter() {
+        Object decrypteur;
+        try {
+            // Utilisation du context Spring pour récupérer un objet en fonction de la classe définie dans la variable classe
+            Class<?> clazz = Class.forName(classe);
+            decrypteur = context.getBean(clazz);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        // Autres instructions de la méthode decrypter...
+    }
+
+
+D'accord, voici les étapes pour modifier la classe `Manager` et la classe de configuration `Config1` conformément à vos instructions :
+
+Dans la classe `Manager`, modifiez le type de la variable `crypteur` pour qu'elle puisse contenir n'importe quel type de crypteur (Crypteur1, Crypteur2 ou Crypteur3), et ajoutez l'annotation `@Qualifier("crypteur")` pour indiquer à Spring de quel crypteur il s'agit :
+
+```java
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Manager {
+
+    @Qualifier("crypteur")
+    private Crypteur crypteur;
+
+    // Autres variables et méthodes de la classe Manager...
+}
+```
+
+Dans la classe de configuration `Config1`, déplacez l'annotation `@Qualifier("crypteur")` pour l'appliquer à la méthode qui définit le composant de type Crypteur1 :
+
+```java
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+
+@Configuration
+public class Config1 {
+
+    @Lazy
+    @Bean
+    @Qualifier("crypteur")
+    public Crypteur1 crypteur1() {
+        return new Crypteur1();
+    }
+
+    // Définition des autres composants avec Lazy...
+}
+```
+
+Enfin, pour créer une classe de configuration `Config2` qui utilise l'exploration de packages et l'instanciation Lazy, vous pouvez simplement annoter cette classe avec `@ComponentScan` et `@Lazy` :
+
+```java
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+
+@Configuration
+@Lazy
+@ComponentScan(basePackages = "crypto")
+public class Config2 {
+    // Pas besoin de définir explicitement les beans, Spring les découvrira automatiquement dans le package "crypto"
+}
+```
+
+Avec cette configuration, Spring explorera le package `crypto` pour découvrir et créer les beans, et ils seront créés en mode Lazy.
+
+Pour que Spring puisse identifier les composants à instancier en utilisant l'exploration de packages, vous pouvez annoter les classes des composants avec `@Component` et utiliser l'annotation `@ComponentScan` dans votre classe de configuration pour indiquer à Spring où chercher ces composants.
+
+Tout d'abord, assurez-vous que toutes les classes des composants (Manager, DaoCrypto, Crypteur1, Crypteur2, Crypteur3) sont annotées avec `@Component`. Ensuite, dans votre classe de configuration, utilisez l'annotation `@ComponentScan` pour spécifier le package où Spring doit rechercher les composants à instancier.
+
+Voici comment vous pouvez faire :
+
+Dans chaque classe de composant (Manager, DaoCrypto, Crypteur1, Crypteur2, Crypteur3), ajoutez l'annotation `@Component` :
+
+```java
+import org.springframework.stereotype.Component;
+
+@Component
+public class Manager {
+    // Code de la classe Manager...
+}
+```
+
+```java
+import org.springframework.stereotype.Component;
+
+@Component
+public class DaoCrypto {
+    // Code de la classe DaoCrypto...
+}
+```
+
+Faites de même pour les classes Crypteur1, Crypteur2, Crypteur3.
+
+Ensuite, dans votre classe de configuration `Config2`, utilisez `@ComponentScan` pour indiquer à Spring de scanner le package `crypto` à la recherche de composants à instancier :
+
+```java
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ComponentScan(basePackages = "crypto")
+public class Config2 {
+    // Pas besoin de définir explicitement les beans, Spring les découvrira automatiquement dans le package "crypto"
+}
+```
+
+Avec cette configuration, Spring explorera le package `crypto` à la recherche de composants annotés avec `@Component`, les instanciera et les gérera correctement. Assurez-vous de supprimer l'ancienne classe de configuration `Config1` si elle n'est plus utilisée.
+
+Pour l'annotation `@Qualifier("crypteur")`, appliquez-la à la classe `Crypteur3` :
+
+```java
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
+@Component
+@Qualifier("crypteur")
+public class Crypteur3 {
+    // Code de la classe Crypteur3...
+}
+```
+
+Avec cette configuration, Spring saura utiliser le `Crypteur3` lorsque le `@Qualifier("crypteur")` est requis.
+
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+public class TestCrypteur4 {
+
+    private final Crypteur4 crypteur = new Crypteur4();
+
+    private final String[] enClair = {"hello", "world", "coucou"};
+    private final String[] cryptes = {"bs3NTNuSncT1", "cn2TVjNXVls=", "7W3ok7CHdF4="};
+
+    @Test
+    public void test1_crypter_null() {
+        assertNull(crypteur.crypter(null));
+    }
+
+    @Test
+    public void test2_crypter_non_null() {
+        for (String clair : enClair) {
+            String crypte = crypteur.crypter(clair);
+            assertNotNull(crypte);
+        }
+    }
+
+    @Test
+    public void test3_crypter_ok() {
+        assertEquals("7W3ok7CHdF4=", crypteur.crypter("coucou"));
+    }
+}
+
+
+
+--- question mesure durée (les deux) 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInfo;
+
+public class TestCrypteur4 {
+
+    private static long debutSerie; // variable pour stocker le début de la série de tests
+    private long debutTest; // variable pour stocker le début de chaque test
+
+    @BeforeAll
+    public static void avantLesTests() {
+        debutSerie = System.currentTimeMillis();
+    }
+
+    @BeforeEach
+    public void avantChaqueTest() {
+        debutTest = System.currentTimeMillis();
+    }
+
+    @AfterEach
+    public void apresChaqueTest(TestInfo testInfo) {
+        long duree = System.currentTimeMillis() - debutTest;
+        System.out.println(testInfo.getDisplayName() + ": " + duree + " ms");
+    }
+
+    // Tests unitaires
+    @Test
+    public void test1_crypter_null() {
+        // Code du test 1
+    }
+
+    @Test
+    public void test2_crypter_non_null() {
+        // Code du test 2
+    }
+
+    @Test
+    public void test3_crypter_ok() {
+        // Code du test 3
+    }
+
+    @AfterAll
+    public static void apresLesTests() {
+        long dureeTotale = System.currentTimeMillis() - debutSerie;
+        System.out.println("Durée totale : " + dureeTotale + " ms");
+    }
+}
+
+@Test
+    public void test4_decrypter_erreur() {
+        assertThrows(CryptoException.class, () -> {
+            crypteur.decrypter("xxx");
+        });
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "29dZIgKM1Ug=, bonjour",
+            "917uBIYM2B0=, bonsoir",
+            "7W3ok7CHdF4=, coucou"
+    })
+    public void test5_decrypter_ok(String codeCrypte, String resultatAttendu) {
+        assertEquals(resultatAttendu, crypteur.decrypter(codeCrypte));
+    }
+

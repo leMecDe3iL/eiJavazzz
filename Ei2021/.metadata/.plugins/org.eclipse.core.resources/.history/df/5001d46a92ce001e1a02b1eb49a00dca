@@ -1,0 +1,50 @@
+package labofx;
+
+import java.io.IOException;
+
+import javafx.application.Application;
+import javafx.stage.Stage;
+import labofx.gui.ManagerGui;
+import labofx.model.ModelCalcul;
+
+
+public class AppliLaboFX extends Application {
+	
+	
+	// Cahmps
+	
+	private Context	context;
+	
+	
+	@Override
+	public final void start( Stage stage ) throws IOException {
+
+		context = new Context();
+
+		ManagerGui managerGui = context.getBean(ManagerGui.class);
+		managerGui.showViewCalcul(stage);
+		
+		// Initialise le ModelCalcul
+		ModelCalcul modelCalcul = null;
+		modelCalcul.init();
+		
+	}
+	
+	@Override
+	public void stop() throws Exception {
+
+		// Ferme le ModelCalcul
+		ModelCalcul modelCalcul = null;
+		modelCalcul.close();
+	}
+
+	
+	// Classe auxiliaire
+	
+	public static class MainExo2 {
+		public static void main(String[] args) {
+			Application.launch( AppliLaboFX.class, args);
+		}
+	}
+
+}
